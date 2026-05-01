@@ -27,7 +27,7 @@ async function bootstrap() {
     }),
   );
 
-  app.useStaticAssets(join(__dirname, '..', 'images'), {
+  app.useStaticAssets(join(process.cwd(), 'images'), {
     prefix: '/images',
   });
 

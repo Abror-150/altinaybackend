@@ -7,6 +7,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
+import * as fs from 'fs';
 import * as sharp from 'sharp';
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -30,9 +31,18 @@ export class UploadController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './dist/images',
+        destination: (req, file, cb) => {
+          const uploadPath = path.join(process.cwd(), 'images');
+
+          if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+          }
+
+          cb(null, uploadPath);
+        },
         filename: (req, file, cb) => {
-          cb(null, `${Date.now()}${path.extname(file.originalname)}`);
+          const uniqueName = `${Date.now()}${path.extname(file.originalname)}`;
+          cb(null, uniqueName);
         },
       }),
     }),
@@ -42,17 +52,24 @@ export class UploadController {
       return { message: 'Fayl yuklanmadi' };
     }
 
-    const compressedFilename = `compressed-${path.parse(file.filename).name}.jpg`;
-    const compressedPath = `./dist/images/${compressedFilename}`;
+    const baseName = path.parse(file.filename).name;
+    const compressedFilename = `compressed-${baseName}.jpg`;
+    const compressedPath = path.join(
+      process.cwd(),
+      'images',
+      compressedFilename,
+    );
 
     await sharp(file.path)
       .resize(1024)
       .jpeg({ quality: 70 })
       .toFile(compressedPath);
 
+    const BASE_URL = 'http://localhost:3000';
+
     return {
-      original: `https://api.mehrsep.uz/images/${file.filename}`,
-      compressed: `https://api.mehrsep.uz/images/compressed-${file.filename}`,
+      original: `${BASE_URL}/images/${file.filename}`,
+      compressed: `${BASE_URL}/images/${compressedFilename}`,
     };
   }
 }
