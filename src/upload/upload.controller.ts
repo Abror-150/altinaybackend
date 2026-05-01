@@ -65,7 +65,7 @@ export class UploadController {
       .jpeg({ quality: 70 })
       .toFile(compressedPath);
 
-    const BASE_URL = 'http://138.2.146.136';
+    const BASE_URL = 'https://api.altinay.uz';
 
     return {
       original: `${BASE_URL}/images/${file.filename}`,
