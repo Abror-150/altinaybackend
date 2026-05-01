@@ -65,7 +65,7 @@ export class UploadController {
       .jpeg({ quality: 70 })
       .toFile(compressedPath);
 
-    const BASE_URL = 'http://localhost:3000';
+    const BASE_URL = 'http://138.2.146.136';
 
     return {
       original: `${BASE_URL}/images/${file.filename}`,
