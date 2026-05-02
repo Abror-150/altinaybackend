@@ -31,6 +31,10 @@ async function bootstrap() {
     prefix: '/images',
   });
 
+  app.useStaticAssets(join(process.cwd(), 'uploads/videos'), {
+    prefix: '/uploads/videos',
+  });
+
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',

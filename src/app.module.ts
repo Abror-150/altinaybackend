@@ -7,9 +7,10 @@ import { OrderModule } from './order/order.module';
 import { UploadController } from './upload/upload.controller';
 import { TelegramModule } from './telegram/telegram.module';
 import { ContactModule } from './contact/contact.module';
+import { VideoModule } from './video/video.module';
 
 @Module({
-  imports: [ProductModule, OrderModule, TelegramModule, ContactModule],
+  imports: [ProductModule, OrderModule, TelegramModule, ContactModule, VideoModule],
   controllers: [AppController, UploadController],
   providers: [AppService],
 })
