@@ -31,8 +31,14 @@ async function bootstrap() {
     prefix: '/images',
   });
 
-  app.useStaticAssets(join(process.cwd(), 'uploads/videos'), {
-    prefix: '/uploads/videos',
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+    prefix: '/uploads/',
+    setHeaders: (res, filePath) => {
+      if (filePath.match(/\.(mp4|webm|ogg|mov)$/i)) {
+        res.setHeader('Content-Disposition', 'inline'); // ← asosiy yechim
+        res.setHeader('Accept-Ranges', 'bytes'); // ← video seek ishlashi uchun
+      }
+    },
   });
 
   app.enableCors({
