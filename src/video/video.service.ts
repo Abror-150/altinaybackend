@@ -1,8 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { existsSync, mkdirSync } from 'fs';
 
 @Injectable()
 export class VideoService {
-  getVideoUrl(req: any, filename: string): string {
-    return `${req.protocol}://${req.get('host')}/uploads/videos/${filename}`;
+  constructor() {
+    if (!existsSync('./uploads/videos')) {
+      mkdirSync('./uploads/videos', { recursive: true });
+    }
+  }
+
+  uploadVideo(file: Express.Multer.File) {
+    const url = `${process.env.BASE_URL}/uploads/videos/${file.filename}`;
+    return { url };
   }
 }

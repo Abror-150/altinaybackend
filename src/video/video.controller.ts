@@ -3,7 +3,6 @@ import {
   Post,
   UseInterceptors,
   UploadedFile,
-  Req,
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -24,10 +23,7 @@ export class VideoController {
     schema: {
       type: 'object',
       properties: {
-        video: {
-          type: 'string',
-          format: 'binary',
-        },
+        video: { type: 'string', format: 'binary' },
       },
     },
   })
@@ -50,18 +46,9 @@ export class VideoController {
       },
     }),
   )
-  uploadVideo(@UploadedFile() file: Express.Multer.File, @Req() req: any) {
-    if (!file) {
-      throw new BadRequestException('Fayl yuklanmadi');
-    }
+  uploadVideo(@UploadedFile() file: Express.Multer.File) {
+    if (!file) throw new BadRequestException('Fayl yuklanmadi');
 
-    const url = this.videoService.getVideoUrl(req, file.filename);
-
-    return {
-      message: 'Muvaffaqiyatli yuklandi!',
-      url,
-      filename: file.filename,
-      size: file.size,
-    };
+    return this.videoService.uploadVideo(file);
   }
 }
